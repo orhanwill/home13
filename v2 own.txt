@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+namespace Bank_Account_Question
+{
+    class Program
+    {
+        interface IBankAccount
+        {
+            void Deposit(double amount);
+            void Withdraw(double amount);
+        }
+
+
+
+        public abstract class BankAccount : IBankAccount
+        {
+            public string Name { get; set; }
+            public int Account_Number { get; set; }
+            public double Balance { get; set; }
+            public BankAccount(string name, int account_number, double balance)
+            {
+                Name = name;
+                Account_Number = account_number;
+                Balance = balance;
+            }
+            public virtual void Deposit(double amountd) { }
+            public virtual void Withdraw(double amountw) { }
+            public abstract void DisplayAccountInfo();
+
+        }
+
+
+        public class SavingsAccount : BankAccount, IBankAccount
+        {
+
+            public double InterestRate { get; set; }
+            public SavingsAccount(string name, int account_number, double balance, double interestrate) : base(name, account_number, balance)
+            {
+                InterestRate = interestrate;
+            }
+
+            public override void Deposit(double amountd)
+            {
+                
+                Balance += amountd * (1 + InterestRate / 100);
+                Console.WriteLine($"The amount now deposited is {amountd}");
+                Console.WriteLine($"The total amount after deposit and interest rate is: {Balance}");
+            }
+            //public override void Withdraw(double amount)
+            //{
+
+            //}
+            public override void DisplayAccountInfo()
+            {
+                Console.WriteLine($"The Account Holder Name:  {Name}");
+                Console.WriteLine($"The Account Number:  {Account_Number}");
+                Console.WriteLine($"The Account Balance: {Balance}");
+                Console.WriteLine("____________________");
+            }
+
+        }
+
+        public class CheckingAccount : BankAccount
+        {
+            public CheckingAccount(string name, int account_number, double balance) : base(name, account_number, balance)
+            { }
+            public override void Withdraw(double amountw)
+            {
+
+                if (amountw > Balance)
+                {
+                    Console.WriteLine($"You have less amount to withdraw.");
+                }
+            }
+            public override void DisplayAccountInfo()
+            {
+                Console.WriteLine($"The Account Holder Name:  {Name}");
+                Console.WriteLine($"The Account Number:  {Account_Number}");
+                Console.WriteLine($"The Account Balance: {Balance}");
+                Console.WriteLine("____________________");
+            }
+        }
+        public class Bank
+        {
+            public List<BankAccount> BankAccounts { get; set; }
+            public Bank()
+                {
+                BankAccounts = new List <BankAccount>();
+                }
+            public void AddBankAccount(BankAccount account)
+            {
+                
+                BankAccounts.Add(account);
+                Console.WriteLine($"Acc No: {account.Name }  with {account.Account_Number} has been added.");
+            }
+            public void DepositToAccount(BankAccount acc1, double money)
+            {
+                foreach (BankAccount account in BankAccounts)
+                {
+                    if (account == acc1)
+                    {
+                        acc1.Balance += money;
+                        Console.WriteLine($"The total amount deposited is:  {money}");
+                        Console.WriteLine($"The total amount we got is:  {acc1.Balance}");
+                    }
+                    //if (account == acc1)
+                    //{
+                    //    Console.WriteLine(" The account is not found: ");
+                    //}
+
+
+                }
+            }
+            public void WithdrawFromAccount(BankAccount acc1, double money)
+            {
+                foreach (BankAccount account in BankAccounts)
+                {
+                    if (account == acc1)
+                    {
+                        acc1.Balance -= money;
+                        Console.WriteLine($"The total amount withdrawn is:  {money}");
+                        Console.WriteLine($"The total amount we got is:  {acc1.Balance}");
+                    }
+                    //if (account == acc1)
+                    //{
+                    //    Console.WriteLine(" The account is not found: ");
+                    //}
+
+
+                }
+            }
+        }
+        static void Main(string[] args)
+        {
+            Bank bank = new Bank();
+            SavingsAccount savingaccount = new SavingsAccount("Shoaib Ahmad", 20994148, 20000, 10);
+            bank.AddBankAccount(savingaccount);
+            savingaccount.Deposit(3000);
+            savingaccount.DisplayAccountInfo();
+            CheckingAccount checkingaccount = new CheckingAccount("Shoaib Ahmad", 20994148, 20000);
+            bank.AddBankAccount(checkingaccount);
+            savingaccount.Withdraw(2000);
+
+            bank.DepositToAccount(savingaccount, 1000);
+            bank.WithdrawFromAccount(savingaccount, 2000);
+
+        }
+    }
+}
