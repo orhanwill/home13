@@ -1,0 +1,88 @@
+using System;
+
+namespace Bank_Account_Question
+{
+    class Program
+    {
+        interface IBankAccount
+        {
+            void Deposit(double amount);
+            void Withdraw(double amount);
+        }
+
+
+
+        public abstract class BankAccount : IBankAccount
+        {
+            public string Name { get; set; }
+            public int Account_Number { get; set; }
+            public double Balance { get; set; }
+            public BankAccount(string name, int account_number, double balance)
+            {
+                Name = name;
+                Account_Number = account_number;
+                Balance = balance;
+            }
+            public virtual void Deposit(double amountd) { }
+            public virtual void Withdraw(double amountw) { }
+            public abstract void DisplayAccountInfo();
+
+        }
+
+
+        public class SavingsAccount : BankAccount,IBankAccount
+        {
+
+            public double InterestRate { get; set; }
+            public SavingsAccount(string name, int account_number, double balance, double interestrate) : base(name, account_number, balance)
+            {
+                InterestRate = interestrate;
+            }
+
+            public override void Deposit(double amountd)
+            {
+                Balance = Balance + amountd;
+                Balance += amountd * (1 + InterestRate / 100);
+                Console.WriteLine($"The amount now deposited is {amountd}");
+                Console.WriteLine($"The total amount after deposit and interest rate is: {Balance}");
+            }
+            //public override void Withdraw(double amount)
+            //{
+                
+            //}
+            public override void DisplayAccountInfo() 
+            {
+                Console.WriteLine($"The Account Holder Name:  {Name}");
+                Console.WriteLine($"The Account Number:  {Account_Number}");
+                Console.WriteLine($"The Account Balance: {Balance}");
+                Console.WriteLine("____________________");
+            }
+
+        }
+
+        public class CheckingAccount : BankAccount
+        {
+            public CheckingAccount(string name, int account_number, double balance, double interestrate) : base(name, account_number, balance)
+            { }
+            public override void Withdraw(double amountw)
+            {
+
+                if (amountw > Balance)
+                {
+                    Console.WriteLine($"You have less amount to withdraw.");
+                }
+            }
+            public override void DisplayAccountInfo()
+            {
+                Console.WriteLine($"The Account Holder Name:  {Name}");
+                Console.WriteLine($"The Account Number:  {Account_Number}");
+                Console.WriteLine($"The Account Balance: {Balance}");
+                Console.WriteLine("____________________");
+            }
+        }
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+        }
+    }
+}
